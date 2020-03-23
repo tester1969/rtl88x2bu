@@ -67,7 +67,13 @@ void rtw_os_indicate_connect(_adapter *adapter)
 #endif /* CONFIG_IOCTL_CFG80211 */
 
 	rtw_indicate_wx_assoc_event(adapter);
-	rtw_netif_carrier_on(adapter->pnetdev);
+
+#ifdef CONFIG_RTW_MESH
+#if CONFIG_RTW_MESH_CTO_MGATE_CARRIER
+	if (!rtw_mesh_cto_mgate_required(adapter))
+#endif
+#endif
+		rtw_netif_carrier_on(adapter->pnetdev);
 
 	if (adapter->pid[2] != 0)
 		rtw_signal_process(adapter->pid[2], SIGALRM);
